@@ -7,7 +7,11 @@
     "pages/cart/main",
     "pages/my/main",
     "pages/mappage/main",
-    "pages/brandlist/main"
+    "pages/brandlist/main",
+    "pages/newgoods/main",
+    "pages/categroylist/main",
+    "pages/topicdetail/main",
+    "pages/goods/main"
   ],
   "permission": {
     "scope.userLocation": {

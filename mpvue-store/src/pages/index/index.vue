@@ -104,9 +104,11 @@
       </div>
     </div>
     <div class="newcategory">
+      <!-- 循环名称 -->
       <div class="list" v-for="(item ,index) in newCategoryList" :key="index">
         <div class="head">{{item.name}}好物</div>
         <div class="sublist">
+          <!-- 循环分类下的物品 -->
           <div v-for="(subitem, subindex) in item.goodsList" :key="subindex">
             <img :src="subitem.list_pic_url" alt="">
             <p>{{subitem.name}}</p>

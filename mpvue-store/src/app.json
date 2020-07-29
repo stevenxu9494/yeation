@@ -11,7 +11,8 @@
     "pages/newgoods/main",
     "pages/categroylist/main",
     "pages/topicdetail/main",
-    "pages/goods/main"
+    "pages/goods/main",
+    "pages/search/main"
   ],
   "permission": {
     "scope.userLocation": {

@@ -12,11 +12,11 @@ router.get('/index/index', controllers.home.index)
 // router.get('/category/currentaction', controllers.category.index.currentAction)
 
 
-// // 搜索相关的接口
-// router.get('/search/indexaction', controllers.search.index.indexAction)
-// router.post('/search/addhistoryaction', controllers.search.index.addHistoryAction)
-// router.post('/search/clearhistoryAction', controllers.search.index.clearHistoryAction) // 清除搜索历史
-// router.get('/search/helperaction', controllers.search.index.helperAction) // 搜索提示
+// 搜索相关的接口
+router.get('/search/indexaction', controllers.search.index.indexAction)
+router.post('/search/addhistoryaction', controllers.search.index.addHistoryAction)
+router.post('/search/clearhistoryAction', controllers.search.index.clearHistoryAction) // 清除搜索历史
+router.get('/search/helperaction', controllers.search.index.helperAction) // 搜索提示
 
 // // 商品
 // router.get('/goods/detailaction', controllers.goods.index.detailAction)

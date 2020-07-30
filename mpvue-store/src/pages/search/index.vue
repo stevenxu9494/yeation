@@ -157,6 +157,7 @@ export default {
     },
     goodsDetail (id) {
       wx.navigateTo({
+        // 带形参去新的页面
         url: '/pages/goods/main?id=' + id
       });
     }

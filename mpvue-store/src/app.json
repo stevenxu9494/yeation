@@ -1,10 +1,11 @@
 {
-  "pages": [
+  "pages": [    
     "pages/index/main",
     "pages/logs/main",
     "pages/category/main",
     "pages/topic/main",
     "pages/cart/main",
+    "pages/search/main",    
     "pages/my/main",
     "pages/mappage/main",
     "pages/brandlist/main",
@@ -12,7 +13,7 @@
     "pages/categroylist/main",
     "pages/topicdetail/main",
     "pages/goods/main",
-    "pages/search/main"
+    "pages/order/main"
   ],
   "permission": {
     "scope.userLocation": {

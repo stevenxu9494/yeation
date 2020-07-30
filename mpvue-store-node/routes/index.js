@@ -18,23 +18,23 @@ router.post('/search/addhistoryaction', controllers.search.index.addHistoryActio
 router.post('/search/clearhistoryAction', controllers.search.index.clearHistoryAction) // 清除搜索历史
 router.get('/search/helperaction', controllers.search.index.helperAction) // 搜索提示
 
-// // 商品
-// router.get('/goods/detailaction', controllers.goods.index.detailAction)
-// router.get('/goods/goodsList', controllers.goods.index.goodsList)
+// 商品
+router.get('/goods/detailaction', controllers.goods.index.detailAction)
+router.get('/goods/goodsList', controllers.goods.index.goodsList)
 
 
-// // 收藏相关的接口
-// router.post('/collect/addcollect', controllers.collect.index.addCollect)
+// 收藏相关的接口
+router.post('/collect/addcollect', controllers.collect.index.addCollect)
 
 
-// // 订单相关的接口
-// router.post('/order/submitAction', controllers.order.index.submitAction)
-// router.get('/order/detailAction', controllers.order.index.detailAction)
+// 订单相关的接口
+router.post('/order/submitAction', controllers.order.index.submitAction)
+router.get('/order/detailAction', controllers.order.index.detailAction)
 
 
-// // 购物车相关的接口
-// router.post('cart/addCart', controllers.cart.index.addCart)
-// router.get('/cart/cartList', controllers.cart.index.cartList)
+// 购物车相关的接口
+router.post('cart/addCart', controllers.cart.index.addCart)
+router.get('/cart/cartList', controllers.cart.index.cartList)
 
 
 // // 收货地址相关的接口

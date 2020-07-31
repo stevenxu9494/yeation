@@ -51,6 +51,15 @@ function request(url, method, data, header = {}) {
   })
 }
 
+export function getStorageOpenid() {
+  const openId = wx.getStorageSync('openId')
+  if (openId) {
+    return openId
+  } else {
+    return ''
+  }
+}
+
 export function get(url, data) {
   return request(url, 'GET', data)
 }

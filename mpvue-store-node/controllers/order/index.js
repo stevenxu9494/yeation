@@ -58,6 +58,7 @@ async function detailAction (ctx) {
   }).whereIn('goods_id', goodsIds).select()
   // 收货地址
   var addressList;
+  // 区分是否是默认地址
   if (addressId) {
     addressList = await mysql('nideshop_address').where({
       'user_id': openId,

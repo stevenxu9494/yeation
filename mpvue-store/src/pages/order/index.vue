@@ -73,6 +73,7 @@ export default {
       listData: []
     }
   },
+  // 原生小程序，等于mounted()
   onShow () {
     if (wx.getStorageSync('addressId')) {
       this.addressId = wx.getStorageSync('addressId')
@@ -102,6 +103,7 @@ export default {
         this.listData = data.goodsList
         this.address = data.address
       }
+      // map计算购物车总价
       this.listData.map((item) => {
         this.allprice = Number(item.retail_price * item.number) + Number(this.allprice)
       })

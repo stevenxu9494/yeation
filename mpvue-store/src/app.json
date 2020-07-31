@@ -13,7 +13,9 @@
     "pages/categroylist/main",
     "pages/topicdetail/main",
     "pages/goods/main",
-    "pages/order/main"
+    "pages/order/main",
+    "pages/addaddress/main",
+    "pages/addressSelect/main"
   ],
   "permission": {
     "scope.userLocation": {

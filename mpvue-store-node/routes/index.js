@@ -37,13 +37,13 @@ router.post('cart/addCart', controllers.cart.index.addCart)
 router.get('/cart/cartList', controllers.cart.index.cartList)
 
 
-// // 收货地址相关的接口
-// router.get('/address/getListAction', controllers.address.index.getListAction)
-// router.get('/address/detailAction', controllers.address.index.detailAction)
-// router.post('/address/saveAction', controllers.address.index.saveAction)
+// 收货地址相关的接口
+router.get('/address/getListAction', controllers.address.index.getListAction)
+router.get('/address/detailAction', controllers.address.index.detailAction)
+router.post('/address/saveAction', controllers.address.index.saveAction)
 
-// // 专题接口
-// router.get('/topic/listaction', controllers.topic.index.listAction)
-// router.get('/topic/detailaction', controllers.topic.index.detailAction)
+// 专题接口
+router.get('/topic/listaction', controllers.topic.index.listAction)
+router.get('/topic/detailaction', controllers.topic.index.detailAction)
 
 module.exports = router

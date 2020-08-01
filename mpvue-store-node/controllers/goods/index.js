@@ -77,6 +77,7 @@ async function goodsList(ctx) {
         'parent_id': categoryId
       }).column('id').select()
       if (subIds.length !== 0) {
+        // 使用map方法只存id
         subIds = subIds.map((item) => {
           return item.id
         })

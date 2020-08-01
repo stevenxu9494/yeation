@@ -2,11 +2,15 @@ const { mysql } = require('../../mysql')
 
 // 获取专题列表数据
 async function listAction (ctx) {
+  // 默认为页面1
   let page = ctx.query.page || 1
+  // 一次性取5条数据
   const size = 5
   // 分页处理
   const data = await mysql('nideshop_topic').column('id', 'title', 'price_info', 'scene_pic_url', 'subtitle').limit(size).offset((page - 1) * size)
+  // 全部数据
   const data1 = await mysql('nideshop_topic').column('id', 'title', 'price_info', 'subtitle').select()
+  // 总页数
   const total = parseInt(data1.length / 5)
 
   ctx.body = {

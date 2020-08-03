@@ -70,7 +70,7 @@ export default {
     categoryList (id) {
       console.log(id)
       wx.navigateTo({
-        url: '../categroylist/main?id=' + id
+        url: '../categorylist/main?id=' + id
       })
     }
   }

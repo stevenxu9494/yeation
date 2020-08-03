@@ -18,7 +18,7 @@
       </swiper>
     </div>
     <div class="channel">
-      <div v-for="(item, index) in channel" :key="index" @click="categroyList(item.id)">
+      <div v-for="(item, index) in channel" :key="index" @click="categoryList(item.id)">
         <img :src="item.icon_url" alt="">
         <p>{{item.name}}</p>
       </div>
@@ -212,10 +212,10 @@ export default {
         url: '/pages/search/main'
       })
     },
-    categroyList (id) {
+    categoryList (id) {
       // console.log(123)
       wx.navigateTo({
-        url: '/pages/categroylist/main?id=' + id
+        url: '/pages/categorylist/main?id=' + id
       })
     },
     branddetail (id) {

@@ -64,7 +64,7 @@ export default {
           url: "/pages/feedback/main"
         }
       ],
-      avator: 'http://yanxuan.nosdn.127.net/8945ae63d940cc42406c3f67019c5cb6.png',
+      avator: 'http://yanxuan.nosdn.127.net/8945ae63d940cc42406c3f67019c5cb6.png',// 默认
       allcheck: false,
       userInfo: {},
       Listids: []

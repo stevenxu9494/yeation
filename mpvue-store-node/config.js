@@ -1,11 +1,11 @@
 const CONF = {
   port: '5757',
   mysql: {
-    host: 'localhost',
-    port: 3306,
+    host: 'localhost', // 'sh-cdb-68ofmjou.sql.tencentcdb.com'
+    port: 3306, // 60911
     user: 'root',
     db: 'nodemysql',
-    pass: '',
+    pass: '', // '5201314xc'
     char: 'utf8mb4'
   }
 }

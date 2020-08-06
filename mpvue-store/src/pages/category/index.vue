@@ -46,6 +46,7 @@ export default {
   mounted () {
     this.getListData()
     this.selectItem(this.id, this.nowIndex)
+    console.log(listData)
   },
   methods: {
     tosearch () {

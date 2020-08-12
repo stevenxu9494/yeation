@@ -67,6 +67,7 @@ export default {
       })
       console.log(data)
       this.detailData = data.data.currentOne
+
     },
     categoryList (id) {
       console.log(id)

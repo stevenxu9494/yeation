@@ -1,6 +1,7 @@
 {
-  "pages": [        
-    "pages/goodslist/main",
+  "pages": [     
+    "pages/goodslist/main",    
+    "pages/goodsdetails/main",   
     "pages/index/main",
     "pages/logs/main",
     "pages/category/main",
@@ -26,7 +27,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "澳洲优选",
+    "navigationBarTitleText": "澳洲好货优选",
     "navigationBarTextStyle": "black",
     "enablePullDownRefresh": true
   },
@@ -47,13 +48,13 @@
         "pagePath": "pages/goodslist/main",
         "iconPath": "static/images/ic_menu_sort_nor.png",
         "selectedIconPath": "static/images/ic_menu_sort_pressed.png",
-        "text": "分类"
+        "text": "分类1"
       },
       {
         "pagePath": "pages/category/main",
         "iconPath": "static/images/ic_menu_sort_nor.png",
         "selectedIconPath": "static/images/ic_menu_sort_pressed.png",
-        "text": "分类"
+        "text": "分类2"
       },
       {
         "pagePath": "pages/cart/main",

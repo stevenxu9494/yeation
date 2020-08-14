@@ -103,7 +103,7 @@ export default {
           this.ListData = res.result.data
         },
         fail: err => {
-          console.error('[云函数] [getlistdata2] 调用失败', err)
+          // console.error('[云函数] [getlistdata2] 调用失败', err)
         }
       })
     },

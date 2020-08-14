@@ -8,6 +8,7 @@
     "pages/categorylist/main",
     "pages/topic/main",
     "pages/cart/main",
+    "pages/cartNew/main",
     "pages/search/main",    
     "pages/my/main",
     "pages/mappage/main",

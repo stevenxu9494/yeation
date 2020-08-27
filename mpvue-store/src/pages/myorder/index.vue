@@ -119,19 +119,11 @@ export default {
               wx.hideLoading()
               this.listData = res.result.data[0]
               this.allprice = this.listData.allprice
-              // if (this.listData.goodsQuantity.indexOf(",")!=-1){
               this.quantity = this.listData.goodsQuantity.split(',')
               this.price = this.listData.goodsPrice.split(',')
               this.summary = this.listData.goodsSummary.split(',')
               this.name = this.listData.goodsName.split(',')
               this.image = this.listData.goodsImage.split(',')                       
-              // }else {
-              //   this.quantity.push(this.listData.goodsQuantity)
-              //   this.price.push(this.listData.goodsPrice)
-              //   this.summary.push(this.listData.goodsSummary)
-              //   this.name.push(this.listData.goodsName)
-              //   this.image.push(this.listData.goodsImage)    
-              // }
             },
             fail: err => {
               wx.hideLoading()
@@ -145,8 +137,6 @@ export default {
                 openid: this.openid
               },
             success: res => {
-              console.log('云函数cart:default调用成功')
-              console.log(this.openid)
               wx.hideLoading()
               if (res.result.data.length){
                 this.address = res.result.data[0]

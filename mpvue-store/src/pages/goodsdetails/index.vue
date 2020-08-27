@@ -105,7 +105,7 @@ export default {
     console.log(this.info.name)
     return {
       title: this.info.name,
-      path: '/pages/goods/main?id' + this.info.id,
+      path: '/pages/goodsdetails/main?id' + this.info.id,
       imageUrl: this.info.imageUrl
     }
   },
@@ -115,6 +115,7 @@ export default {
     this.id = parseInt(this.$root.$mp.query.id)
     // console.log(typeof this.id, '------')
     // this.goodsDetail()
+    this.number = 0
     this.goodsDetail()
   },
   methods: {
@@ -239,7 +240,10 @@ export default {
           data: {
             type: "insert",
             id: this.id,
-            openid: this.openid
+            openid: this.openid,
+            thumbUrl: this.info.thumbUrl,
+            name: this.info.name,
+            sellPrice: this.info.sellPrice,
           },
           success: res => {
             // console.log('云函数调用成功')
@@ -363,6 +367,7 @@ export default {
                     type: "insert",
                     openid: this.openid,
                     paid: false,
+                    shipped:false,
                     goodsId: goodsId,
                     goodsQuantity: goodsQuantity,
                     goodsPrice: goodsPrice,

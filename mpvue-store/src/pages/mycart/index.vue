@@ -165,7 +165,7 @@ export default {
       success: res => {
         // console.log('云函数cart调用成功')
         // console.log(this.openid)
-        wx.hideLoading()
+        
         console.log(res.result.data.length)
         // 存在未支付订单
         if(res.result.data.length) {
@@ -207,6 +207,7 @@ export default {
                 type: "insert",
                 openid: this.openid,
                 paid: false,
+                shipped: false,
                 goodsId: goodsId,
                 goodsQuantity: goodsQuantity,
                 goodsPrice: goodsPrice,

@@ -9,7 +9,7 @@
     <div class="iconlist">
       <div @click="goTo(item.url)" v-for="(item, index) in listData" :key="index">
         <span class="iconfont" :class="item.icon"></span>
-        <span>{{item.title}}</span>
+        <span>-{{item.title}}-</span>
       </div>
     </div>
   </div>
@@ -44,7 +44,7 @@ export default {
         {
           title: "地址管理",
           icon: "icon-dizhiguanli",
-          url: "/pages/address/main"
+          url: "/pages/myaddress/main"
         },
         {
           title: "联系客服",
@@ -59,7 +59,7 @@ export default {
         {
           title: "意见反馈",
           icon: "icon-yijianfankui",
-          url: "/pages/feedback/main"
+          url: ""
         }
       ],
       avator: 'http://yanxuan.nosdn.127.net/8945ae63d940cc42406c3f67019c5cb6.png',// 默认
@@ -77,9 +77,19 @@ export default {
   },
   methods: {
     goTo (url) {
-      wx.navigateTo({
-        url: url
-      });        
+      if(url!= ""){
+        wx.navigateTo({
+          url: url
+        });     
+      }else{
+        wx.showToast({
+          title: '功能暂未开发',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: res => {}
+        })
+      }   
     }
   }
 };

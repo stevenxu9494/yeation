@@ -1,8 +1,9 @@
 {
-  "pages": [  
-    
+  "pages": [      
     "pages/index/main",  
-    "pages/indexOld/main",    
+    "pages/my/main",
+    "pages/myaddress/main",
+    "pages/collectlist/main",
     "pages/goodslist/main",    
     "pages/goodsdetails/main",  
     "pages/logs/main",
@@ -12,7 +13,6 @@
     "pages/cart/main",
     "pages/mycart/main",
     "pages/search/main",    
-    "pages/my/main",
     "pages/mappage/main",
     "pages/brandlist/main",
     "pages/newgoods/main",

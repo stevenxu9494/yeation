@@ -1,0 +1,81 @@
+// Color variables (appears count calculates by raw css)
+@color0: #ffffff; // Appears 2 times
+
+// Width variables (appears count calculates by raw css)
+@width2: 302rpx; // Appears 2 times
+
+// Height variables (appears count calculates by raw css)
+@height0: 302rpx; // Appears 2 times
+
+.collection {
+	.title {
+		background: @color0;
+		font-size: 36rpx;
+		font-weight: bold;
+		margin-bottom: 5rpx;
+		padding: 20px 0;
+		text-align: center;
+	}
+	.sublist {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		margin: 0 auto;
+		width: 730rpx;
+		div {
+			background: @color0;
+			margin-bottom: 10rpx;
+			padding-bottom: 10rpx;
+			width: 360rpx;
+			img {
+				display: block;
+				height: @height0;
+				margin: 0 auto;
+				width: @width2;
+			}
+			p {
+				margin-bottom: 5rpx;
+				text-indent: 1em;
+				&:nth-child(2) {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					width: 98%;
+				}
+				&:nth-child(3) {
+					color: #9c3232;
+				}
+			}
+			&:nth-child(2n) {
+				margin-left: 10rpx;
+			}
+		}
+		.last {
+			align-items: center;
+			display: block;
+			display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
+			height: @height0;
+			justify-content: center;
+			margin: 0 auto;
+			width: @width2;
+			p {
+				color: #333333;
+				font-size: 33rpx;
+				height: 33rpx;
+				line-height: 33rpx;
+				text-align: center;
+				width: 100%;
+			}
+			.icon {
+				background-size: 100% 100%;
+				background: url('../../../static/images/rightbig.png') no-repeat;
+				display: inline-block;
+				height: 70rpx;
+				margin-top: 60rpx;
+				width: 70rpx;
+			}
+		}
+	}
+}

@@ -35,24 +35,23 @@
       <image :src=item alt="" mode='widthFix'/>
     </div>
     <!-- footer -->
-    <div class="bottom-fixed">
+    <div class="bottom-fixed" :class="{safeArea: isIPhoneX}">
       <div class="collect-box" @click="collect">
         <div class="collect" :class="[collectFlag ? 'active' : '']"></div>
       </div>
       <div class="car-box" @click="toCart">
         <div class="car" >
-          <!-- <span>{{allnumber}}</span> -->
-          <span>5</span>
+          <span>{{allnumber}}</span>
           <img src="/static/images/ic_menu_shoping_nor.png" alt="">
         </div>
       </div>
-      <div @click="buy">立即购买</div>
-      <div @click="addCart">加入购物车</div>
+      <div @click="buy()">立即购买</div>
+      <div @click="addCart()">加入购物车</div>
     </div>
 
     <!-- 选择规格的弹出层 -->
     <div class="pop" v-show="showpop" @click="showType"></div>
-    <div class="attr-pop" :class="[showpop ? 'fadeup' : 'fadedown']">
+    <div class="attr-pop" :class="[showpop ? 'fadeup' : 'fadedown', {safe: isIPhoneX}]">
       <div class="top">
         <div class="left">
           <img :src="info.thumbUrl" alt="">
@@ -79,24 +78,26 @@
 </template>
 
 // <script>
+import { showLoading, hideLoading } from '../../utils/loading'
 export default {
   data () {
     return {
-//       gallery: [], // banner
       id: 0,
       openid: '',
       info: {},
       showpop: false,
       number: 0,
       collectFlag: false,
-//       brand: {},    
-//       attribute: [],
-//       goods_desc: '',
-//       issueList: [], // 常见问题
-//       productList: [],
-//       goodsId: '',
-//       allnumber: 0,
-//       allPrice: '' // 总价=数量*单价
+      sellPrice: 0,
+      hasGoods: [],
+      allnumber: 0
+      // brand: {},    
+      // attribute: [],
+      // goods_desc: '',
+      // issueList: [], // 常见问题
+      // productList: [],
+      // goodsId: '',
+      // allPrice: '' // 总价=数量*单价
     }
   },
   // 商品分享, 小程序自带格式, title/path/imageUrl
@@ -118,15 +119,36 @@ export default {
   },
   methods: {
     onGotUserInfo: function(e){
+      showLoading('加载中...');
       //将this对象保存到that中
       wx.cloud.callFunction({
         name: 'login',
         success: res => {
-          console.log('云函数调用成功')
-          console.log(res.result.openid)
           this.openid = res.result.openid
+          wx.cloud.callFunction({
+            name: 'cart',
+            data: {
+              type: "get",
+              openid: this.openid
+            },
+            success: res => {
+              // console.log('云函数cart:get调用成功')
+              // console.log(res.result.data)
+              hideLoading()
+              if (res.result.data.length === 0) {
+                this.allnumber = 0                
+              } else{
+                this.allnumber = res.result.data.map(item => item.number).reduce((total, num) => total + num)
+              }
+            },
+            fail: err => {
+              hideLoading()
+              console.error('[云函数] [login] 调用失败', err)
+            }
+          })
         },
         fail: err => {
+          hideLoading()
           console.error('[云函数] [login] 调用失败', err)
         }
       })
@@ -137,18 +159,21 @@ export default {
       // this.nowItem = item.category
       // console.log(this.nowIndex)
       // console.log(this.nowItem)
+      showLoading('加载中...');
       wx.cloud.callFunction({
         name: 'getgoodsdetails',
         data: {
           id: this.id
         },
         success: res => {
-          console.log('云函数调用成功')
+          hideLoading()
+          // console.log('云函数调用成功')
           // console.log(res.result.data)
           this.info = res.result.data[0]
-          console.log(this.info)
+          // console.log(this.info)
         },
         fail: err => {
+          hideLoading()
           console.error('[云函数] [getlistdata2] 调用失败', err)
         }
       })
@@ -160,8 +185,7 @@ export default {
           openid: this.openid
         },
         success: res => {
-          console.log('云函数collect调用成功')
-          console.log(res.result.data.length)
+          hideLoading()
           if(res.result.data.length>0){
             this.collectFlag = true
           }else{
@@ -169,6 +193,7 @@ export default {
           }
         },
         fail: err => {
+          hideLoading()
           console.error('[云函数] [getlistdata2] 调用失败', err)
         }
       })
@@ -206,7 +231,8 @@ export default {
       }
     },
     collect () {
-      if(this.collectFlag == false){
+      showLoading('加载中...');
+      if(this.collectFlag === false){
         this.collectFlag = !this.collectFlag
         wx.cloud.callFunction({
           name: 'insertcollect',          
@@ -216,10 +242,11 @@ export default {
             openid: this.openid
           },
           success: res => {
-            console.log('云函数调用成功')
+            // console.log('云函数调用成功')
             // console.log(res.result.data)
-            console.log(typeof this.id)
-            console.log(typeof this.openid)
+            // console.log(typeof this.id)
+            // console.log(typeof this.openid)
+            hideLoading()
             wx.showToast({
               title: '收藏成功',
               icon: 'success',
@@ -227,6 +254,7 @@ export default {
             })
           },
           fail: err => {
+            hideLoading()
             console.error('[云函数] [getlistdata2] 调用失败', err)
           }
         })
@@ -240,8 +268,9 @@ export default {
             openid: this.openid
           },
           success: res => {
-            console.log('云函数delete调用成功')
+            // console.log('云函数delete调用成功')
             // console.log(res.result.data)
+            hideLoading()
             wx.showToast({
             title: '取消收藏',
             icon: 'fail',
@@ -249,6 +278,7 @@ export default {
           })
           },
           fail: err => {
+            hideLoading()
             console.error('[云函数] [getlistdata2] 调用失败', err)
           }
         })
@@ -256,15 +286,15 @@ export default {
     },
     toCart () {
       // 切换tab
-      wx.switchTab({
-        url: '/pages/cartNew/main'
+      wx.reLaunch({
+        url: '/pages/mycart/main'
       });  
     },
-    async buy () {
-      // 弹出层是否已经弹出
+    buy() {
       if (this.showpop) {
-        // 如果没有选择数量，使用微信官方弹窗提示选择商品
+      // 如果没有选择数量，使用微信官方弹窗提示选择商品
         if (this.number === 0) {
+          hideLoading()
           wx.showToast({
             title: '请选择商品数量',
             // 2秒后消失
@@ -274,27 +304,107 @@ export default {
             mask: true,
             success: res => {}
           })
-          return false
-        }
-        // 已经选择了数量，打开接口请求
-        const data = await post('/order/submitAction', {
-          goodsId: this.goodsId,
-          openId: this.openId,
-          allPrice: this.allPrice
+        } else {
+          showLoading('加载中...');
+          let goodsId = this.info.id.toString()
+          let goodsQuantity = this.number.toString()
+          let goodsPrice = this.info.sellPrice.toString()
+          let goodsSummary = (parseInt(goodsPrice) * parseInt(goodsQuantity)).toString()
+          let goodsName = this.info.name
+          let goodsImage = this.info.thumbUrl
+          wx.cloud.callFunction({
+          name: 'order',
+          data: {
+              type: "check",
+              openid: this.openid
+            },
+          success: res => {
+            // console.log('云函数cart调用成功')
+            // console.log(this.openid)
+            wx.hideLoading()
+            console.log(res.result.data.length)
+            // 存在未支付订单
+            if(res.result.data.length) {
+              console.log("####这是update步骤####")
+              console.log(goodsName)
+              wx.cloud.callFunction({
+                name: 'order',
+                data: {
+                    type: "update",
+                    openid: this.openid,
+                    paid: false,
+                    shipped:false,
+                    goodsId: goodsId,
+                    goodsQuantity: goodsQuantity,
+                    goodsPrice: goodsPrice,
+                    goodsSummary: goodsSummary,
+                    goodsName: goodsName,
+                    goodsImage: goodsImage,
+                    allprice: this.allPrice
+                  },
+                success: res => {
+                  // console.log('云函数cart调用成功')
+                  // console.log(this.openid)
+                  wx.hideLoading()
+                  wx.navigateTo({
+                    url: '/pages/myorder/main'
+                  });
+                },
+                fail: err => {
+                  wx.hideLoading()
+                  console.error('[云函数] [login] 调用失败', err)
+                }
+              })
+            } else{
+              // 不存在未支付订单
+              wx.cloud.callFunction({
+                name: 'order',
+                data: {
+                    type: "insert",
+                    openid: this.openid,
+                    paid: false,
+                    goodsId: goodsId,
+                    goodsQuantity: goodsQuantity,
+                    goodsPrice: goodsPrice,
+                    goodsSummary: goodsSummary,
+                    goodsName: goodsName,
+                    goodsImage: goodsImage,
+                    allprice: this.allPrice
+                  },
+                success: res => {
+                  // console.log('云函数cart调用成功')
+                  // console.log(this.openid)
+                  wx.hideLoading()
+                  wx.navigateTo({
+                    url: '/pages/myorder/main'
+                  });
+                },
+                fail: err => {
+                  wx.hideLoading()
+                  console.error('[云函数] [login] 调用失败', err)
+                }
+              })
+            }
+            // wx.navigateTo({
+            //   url: '/pages/myorder/main'
+            // });
+          },
+          fail: err => {
+            wx.hideLoading()
+            console.error('[云函数] [login] 调用失败', err)
+          }
         })
-        if (data) {
-          wx.navigateTo({
-            url: '/pages/order/main'
-          });
-            
         }
-      } else {
+      }else {
         this.showpop = true
       }
+        
+      
     },
-    async addCart () {
+    addCart () {
       if (this.showpop) {
-        if (this.number == 0) {
+        if (this.number === 0) {
+          hideLoading()
           wx.showToast({
             title: '请选择商品数量',
             duration: 2000,
@@ -303,24 +413,88 @@ export default {
             success: res => {}
           })
           return false
-        }
-        const data = await post('cart/addCart', {
-          openId: this.openId,
-          goodsId: this.goodsId,
-          number: this.number
-        })
-        if (data) {
-          this.allnumber = this.allnumber + this.number
-          wx.showToast({
-            title: '添加购物车成功',
-            icon: 'success',
-            duration: 1500
+        }else {
+          showLoading('加载中...');
+          wx.cloud.callFunction({
+            name: 'cart',
+            data: {
+              type: "check",
+              id: this.id,
+              openid: this.openid
+            },
+            success: res => {
+              // console.log('云函数cart调用成功')
+              this.hasGoods = res.result.data
+              if(this.hasGoods.length===0){
+                wx.cloud.callFunction({
+                  name: 'cart',
+                  data: {
+                    type: "insert",
+                    id: this.id,
+                    openid: this.openid,
+                    number: this.number,
+                    sellPrice: this.info.sellPrice,
+                    name: this.info.name,
+                    thumbUrl: this.info.thumbUrl,
+                    isOrdered: false
+                  },
+                  success: res => {
+                    hideLoading()
+                    this.onGotUserInfo()
+                    wx.showToast({
+                      title: '添加购物车成功',
+                      icon: 'success',
+                      duration: 1500
+                    })
+                    this.showpop = false
+                  },
+                  fail: err => {
+                    hideLoading()
+                    console.error('[云函数] [getlistdata2] 调用失败', err)
+                  }
+                })
+              } else{
+                console.log("这是更新步骤")
+                wx.cloud.callFunction({
+                  name: 'cart',
+                  data: {
+                    type: "update",
+                    id: this.id,
+                    openid: this.openid,
+                    number: this.number,
+                    sellPrice: this.info.sellPrice,
+                    name: this.info.name,
+                    thumbUrl: this.info.thumbUrl,
+                    isOrdered: false
+                  },
+                  success: res => {
+                    hideLoading()
+                    this.onGotUserInfo()
+                    wx.showToast({
+                      title: '添加购物车成功',
+                      icon: 'success',
+                      duration: 1500
+                    })
+                    this.showpop = false
+                  },
+                  fail: err => {
+                    hideLoading()
+                    console.error('[云函数] [getlistdata2] 调用失败', err)
+                  }
+                })
+              }
+            },
+            fail: err => {
+              hideLoading()
+              console.error('[云函数] [getlistdata2] 调用失败', err)
+            }
           })
+          
         }
-      } else {
+      }else {
         this.showpop = true
       }
-  }
+    }
   }
 }
 </script>

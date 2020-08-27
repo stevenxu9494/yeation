@@ -14,7 +14,7 @@
           {{item.category}}
         </div>
       </scroll-view>
-      <scroll-view class="right" scroll-y="true">
+      <scroll-view class="right" scroll-y="true" :scroll-top='scrollTop'>
         <!-- <div class="banner">
           <img :src="detailData.banner_url" alt="">
         </div>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { showLoading, hideLoading } from '../../utils/loading'
 export default {
   data () {
     return {
@@ -48,13 +49,15 @@ export default {
       nowIndex: 0,
       nowItem: "奶粉",
       goodsid:"",
-      scrollTop: ''
+      scrollTop: 0
       // listData: [],
       // id: '1005000',
       // detailData: {}
     }
   },
   onShow () {
+    this.nowItem = "奶粉"
+    this.nowIndex = 0
     this.getListData()
     this.selectItem(this.nowItem, this.nowIndex) 
     this.getCategories()  
@@ -62,50 +65,57 @@ export default {
   },
   methods: {    
     getCategories() {
+      showLoading('加载中...');
       wx.cloud.callFunction({
         name: 'getcategories',
         success: res => {
+          hideLoading()
           this.categories = res.result.data
+          this.nowItem = res.result.data[0]
         },
         fail: err => {
+          hideLoading()
           console.error('[云函数] [getcategories] 调用失败', err)
         }
       })
     },
     getListData() {
+      showLoading('加载中...');
       wx.cloud.callFunction({
         name: 'getlistdata',
         data: {
           category: this.nowItem||'奶粉'
         },
         success: res => {
+          hideLoading()
           this.ListData = res.result.data
         },
         fail: err => {
+          hideLoading()
           console.error('[云函数] [getlistdata1] 调用失败', err)
         }
       })
     },
+    goTop: function (e) {  // 一键回到顶部
+      if (wx.pageScrollTo) {
+        wx.pageScrollTo({
+          scrollTop: 0
+        })
+      } else {
+        wx.showModal({
+          title: '提示',
+          content: '当前微信版本过低，暂无法使用该功能，请升级后重试。'
+        })
+      }
+    },
     selectItem (item, index) {
       // 获取右边商品的数据
+      showLoading('加载中...');
       this.nowIndex = index
       this.nowItem = item.category
-      console.log(this.nowIndex)
-      console.log(this.nowItem)
-      wx.cloud.callFunction({
-        name: 'getlistdata',
-        data: {
-          category: this.nowItem
-        },
-        success: res => {
-          console.log('云函数调用成功')
-          console.log(res.result.data)
-          this.ListData = res.result.data
-        },
-        fail: err => {
-          // console.error('[云函数] [getlistdata2] 调用失败', err)
-        }
-      })
+      // console.log(this.nowIndex)
+      // console.log(this.nowItem)
+      this.getListData()
     },
     goodsdetails(id) {
       console.log(id)
@@ -113,20 +123,6 @@ export default {
         url: '../goodsdetails/main?id=' + id
       })
     }
-    // onGotUserInfo: function(){
-    //   //将this对象保存到that中
-    //   wx.cloud.callFunction({
-    //     name: 'login',
-    //     success: res => {
-    //       console.log('云函数调用成功')
-    //       console.log(res.result.openid)
-    //       this.openid = res.result.openid
-    //     },
-    //     fail: err => {
-    //       console.error('[云函数] [login] 调用失败', err)
-    //     }
-    //   })
-    // }
   }
 }
 </script>

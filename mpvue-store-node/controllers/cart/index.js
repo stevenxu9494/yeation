@@ -8,7 +8,7 @@ async function addCart(ctx) {
     'user_id': openId,
     'goods_id': goodsId
   }).select()
-  if (haveGoods.length === 0) {
+  if (haveGoods.length === 0) { 
     const goods = await mysql('nideshop_goods').where({
       'id': goodsId
     }).select()

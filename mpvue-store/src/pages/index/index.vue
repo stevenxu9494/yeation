@@ -2,7 +2,7 @@
   <div class="index">
     <!-- 头部搜索 -->
     <div class="search">
-      <div @click="toMappage">{{ cityName }}</div>
+      <!-- <div @click="toMappage">{{ cityName }}</div> -->
       <div @click="toSearch">
         <input type="text" placeholder="搜索商品" />
         <span class="icon"></span>
@@ -12,53 +12,24 @@
       <swiper class="swiper-container" indicator-dots="true" autoplay="true" interval="3000" circular="true" duration="500">
         <block v-for="(item, index) in banner" :key="index">
           <swiper-item class="swiper-item">
-            <image class="slide-image" :src="item.image_url"/>
+            <image class="slide-image" :src="item.address" mode='widthFix'/>
           </swiper-item>
         </block>
       </swiper>
     </div>
-    <div class="channel">
+    <!-- <div class="channel">
       <div v-for="(item, index) in channel" :key="index" @click="categoryList(item.id)">
         <img :src="item.icon_url" alt="">
         <p>{{item.name}}</p>
       </div>
-    </div>
+    </div> -->
     <div class="brand">
-      <div class="head" @click="tobrandList">
+      <div class="head">
         品牌制造商直供
-      </div>
-      <div class="content">
-        <div v-for="(item, index) in brandList" :key="index" @click="branddetail(item.id)">
-          <div>
-            <p>{{item.name}}</p>
-            <p class="price">{{item.floor_price}}元起</p>
-          </div>
-          <img :src="item.new_pic_url" alt="">
-        </div>
-      </div>
-    </div>
-    <div class="newgoods">
-      <div class="newgoods-top" @click="goodsList('new')">
-        <div class="top">
-          <p>新品首发</p>
-          <p>查看全部</p>
-        </div>
-      </div>
-      <div class="list">
-        <ul>
-          <scroll-view class="scroll-view" :scroll-x="true">
-            <li v-for="(item ,index) in newGoods" :key="index">
-              <img :src="item.list_pic_url" alt="">
-              <p>{{item.name}}</p>
-              <p>{{item.goods_brief}}</p>
-              <p>¥{{item.retail_price}}</p>
-            </li>
-          </scroll-view>
-        </ul>
       </div>
     </div>
     <div class="newgoods hotgoods">
-      <div class="newgoods-top" @click="goodsList('hot')">
+      <div class="newgoods-top" @click="goodsList()">
         <div class="top">
           <p>
             人气推荐
@@ -68,68 +39,11 @@
           <p>查看全部</p>
         </div>
       </div>
-      <div class="list">
-        <ul>
-          <scroll-view class="scroll-view" :scroll-x="true">
-            <li v-for="(item ,index) in hotGoods" :key="index">
-              <img :src="item.list_pic_url" alt="">
-              <p>{{item.name}}</p>
-              <p>{{item.goods_brief}}</p>
-              <p>¥{{item.retail_price}}</p>
-            </li>
-          </scroll-view>
-        </ul>
-      </div>
-    </div>
-    <div class="topicList">
-      <div class="topicList-top">
-        专题精选
-        <span class="icon"></span>
-      </div>
-      <div class="list">
-        <ul>
-          <scroll-view class="scroll-view" :scroll-x="true">
-            <li v-for="(item ,index) in topicList" :key="index" @click="topicdetail(item.id)">
-              <img :src="item.item_pic_url" alt="">
-              <div class="btom">
-                <div>
-                  <p>{{item.title}}</p>
-                  <p>{{item.subtitle}}</p>
-                </div>
-                <div>{{item.price_info}}元起</div>
-              </div>
-            </li>
-          </scroll-view>
-        </ul>
-      </div>
-    </div>
-    <div class="newcategory">
-      <!-- 循环名称 -->
-      <div class="list" v-for="(item ,index) in newCategoryList" :key="index">
-        <div class="head">{{item.name}}好物</div>
-        <div class="sublist">
-          <!-- 循环分类下的物品 -->
-          <div v-for="(subitem, subindex) in item.goodsList" :key="subindex">
-            <img :src="subitem.list_pic_url" alt="">
-            <p>{{subitem.name}}</p>
-            <p>{{subitem.retail_price}}</p>
-          </div>
-          <div>
-            <div class="last">
-              <p>{{item.name}}好物</p>
-              <span class="icon"></span>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script>
-import amapFile from '../../utils/amap-wx';
-import { mapState, mapMutations } from 'vuex';
-import { get } from '../../utils'
 export default {
   data() {
     return {
@@ -142,71 +56,36 @@ export default {
       newCategoryList:[]
     }
   },
-  computed: {
-    ...mapState(['cityName'])
-  },
+
   mounted() {
     this.getData()
-    this.getCityName()
   },
   methods: {
-    ...mapMutations(['update']),
-    toMappage () {
-      // 通过 wx.getSetting 先查询一下用户是否授权 “scoped.record”
-      let _this = this
-      wx.getSetting({
-        success: (res) => {
-          // 如果没有同意授权，打开设置
-          // console.log(res)
-          if (!res.authSetting['scope.userLocation']) {
-            wx.openSetting({
-              success: res => {
-                // 获取授权位置信息
-                _this.getCityName()
-              }
-            })
-          } else {
-            wx.navigateTo({
-              url: '/pages/mappage/main',
-            });
-            _this.getCityName()
-          }
+    // async getData() {
+    //   // http://localhost:5757/lm/index/index
+    //   const data = await get('/index/index') 
+    //   this.banner = data.banner
+    //   this.channel = data.channel
+    //   this.brandList = data.brandList
+    //   this.newGoods = data.newGoods
+    //   this.hotGoods = data.hotGoods
+    //   this.topicList = data.topicList
+    //   this.newCategoryList = data.newCategoryList
+    // },
+    getData() {
+      wx.cloud.callFunction({
+        name: 'banner',
+        success: res => {
+          // console.log('云函数调用成功')
+          // console.log(res.result.data)
+          this.banner = res.result.data
         },
-        fail: (err) => {
-          console.log(err)
-        },
-        complete: () => {}
-      });
-        
-    },
-    getCityName () {
-      let _this = this
-      var myAmapFun = new amapFile.AMapWX({key:'95fe44a31b8a098394c0933d159e6496'});
-      myAmapFun.getRegeo({
-        success: function (data) {
-          // 成功回调
-          console.log(data)
-          // ........
-        },
-        fail: function (info) {
-          // 失败回调
-          console.log(info)
-          // _this.cityName = '北京'
-          _this.update({cityName: '北京'})
+        fail: err => {
+          // console.error('[云函数] [getlistdata2] 调用失败', err)
         }
       })
     },
-    async getData() {
-      // http://localhost:5757/lm/index/index
-      const data = await get('/index/index') 
-      this.banner = data.banner
-      this.channel = data.channel
-      this.brandList = data.brandList
-      this.newGoods = data.newGoods
-      this.hotGoods = data.hotGoods
-      this.topicList = data.topicList
-      this.newCategoryList = data.newCategoryList
-    },
+
     toSearch () {
       wx.navigateTo({
         url: '/pages/search/main'
@@ -228,16 +107,10 @@ export default {
         url: '/pages/brandlist/main'
       })
     },
-    goodsList (info) {
-      if (info == 'hot') {
-        wx.navigateTo({
-          url: '/pages/newgoods/main?isHot=' + 1
-        })
-      } else {
-        wx.navigateTo({
-          url: '/pages/newgoods/main?isNew=' + 1
-        })
-      }
+    goodsList () {
+      wx.switchTab({
+        url: '/pages/goodslist/main'
+      })
     },
     topicdetail (id) {
       wx.navigateTo({

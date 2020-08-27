@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import App from './App'
 import store from './store/index'
+import MyPlugin from './mimxins/index'
 // 把store挂载到全局
 Vue.prototype.$store = store
-
+Vue.use(MyPlugin)
 Vue.config.productionTip = false
 App.mpType = 'app'
 wx.cloud.init({

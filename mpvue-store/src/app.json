@@ -1,14 +1,16 @@
 {
-  "pages": [     
+  "pages": [  
+    
+    "pages/index/main",  
+    "pages/indexOld/main",    
     "pages/goodslist/main",    
-    "pages/goodsdetails/main",   
-    "pages/index/main",
+    "pages/goodsdetails/main",  
     "pages/logs/main",
     "pages/category/main",
     "pages/categorylist/main",
     "pages/topic/main",
     "pages/cart/main",
-    "pages/cartNew/main",
+    "pages/mycart/main",
     "pages/search/main",    
     "pages/my/main",
     "pages/mappage/main",
@@ -18,7 +20,10 @@
     "pages/goods/main",
     "pages/order/main",
     "pages/addaddress/main",
-    "pages/addressSelect/main"
+    "pages/addressSelect/main",
+    "pages/myaddaddress/main",
+    "pages/myaddressSelect/main",
+    "pages/myorder/main"
   ],
   "permission": {
     "scope.userLocation": {
@@ -49,16 +54,10 @@
         "pagePath": "pages/goodslist/main",
         "iconPath": "static/images/ic_menu_sort_nor.png",
         "selectedIconPath": "static/images/ic_menu_sort_pressed.png",
-        "text": "分类1"
+        "text": "分类"
       },
       {
-        "pagePath": "pages/category/main",
-        "iconPath": "static/images/ic_menu_sort_nor.png",
-        "selectedIconPath": "static/images/ic_menu_sort_pressed.png",
-        "text": "分类2"
-      },
-      {
-        "pagePath": "pages/cart/main",
+        "pagePath": "pages/mycart/main",
         "iconPath": "static/images/ic_menu_shoping_nor.png",
         "selectedIconPath": "static/images/ic_menu_shoping_pressed.png",
         "text": "购物车"

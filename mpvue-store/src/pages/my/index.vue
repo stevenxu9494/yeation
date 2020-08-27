@@ -1,11 +1,9 @@
 <template>
   <div class="my">
-    <div class="myinfo">
-      <img :src="avator" alt />
+    <div class="myinfo">      
+      <open-data type="userAvatarUrl" class="avatar"></open-data>
       <div>
-        <p>{{userInfo.nickName}}</p>
-        <p v-if="userInfo.nickName">微信用户</p>
-        <p v-else>点击登录</p>
+        <open-data type="userNickName" class="nickname"></open-data>
       </div>
     </div>
     <div class="iconlist">
@@ -18,7 +16,7 @@
 </template>
 
 <script>
-import { get, login, toLogin } from '../../utils'
+import { showLoading, hideLoading } from '../../utils/loading'
 export default {
   data() {
     return {
@@ -71,19 +69,17 @@ export default {
     };
   },
   onShow () {
-    if (login()) {
-      this.userInfo = login()
-      console.log(this.userInfo)
-      this.avator = this.userInfo.avatarUrl
-    }
+    // if (login()) {
+    //   this.userInfo = login()
+    //   console.log(this.userInfo)
+    //   this.avator = this.userInfo.avatarUrl
+    // }
   },
   methods: {
     goTo (url) {
-      console.log(123)
       wx.navigateTo({
         url: url
-      });
-        
+      });        
     }
   }
 };

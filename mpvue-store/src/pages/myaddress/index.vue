@@ -16,10 +16,10 @@
               <p>{{item.mobile}}</p>
               <p>{{item.address+item.address_detail}}</p>
             </div>
-            <div @click="toDetail(item.id)"></div>
+            <div @click="toDetail(item._id)"></div>
 
           </div>
-          <div @click="delAddress(item.id)" class="delete" :style="item.textStyle1">
+          <div @click="delAddress(item._id)" class="delete" :style="item.textStyle1">
             <div>
               删除
             </div>
@@ -33,7 +33,7 @@
       </div>
     </scroll-view>
 
-    <div class="bottom">
+    <div class="bottom" :class="{safeArea: isIPhoneX}">
       <div @click="wxaddress(1)">+新建地址</div>
       <div @click="wxaddress">一键导入微信地址</div>
     </div>
@@ -42,6 +42,7 @@
 
 <script>
 import { get, getStorageOpenid } from "../../utils";
+import { showLoading, hideLoading } from '../../utils/loading'
 export default {
   onShow() {
     this.openId = getStorageOpenid();
@@ -86,18 +87,36 @@ export default {
       this.startX = e.touches[0].pageX;
       this.startY = e.touches[0].pageY;
     },
-    async delAddress(id) {
+    delAddress(id) {
       var _this = this;
       wx.showModal({
         title: "",
         content: "是否要删除该收货地址",
         success: function(res) {
           if (res.confirm) {
-            const data = get("/address/deleteAction", {
-              id: id
-            }).then(() => {
+            showLoading('加载中...');
+            wx.cloud.callFunction({
+            name: 'address',
+            data: {
+                type: "delete",
+                addressId: id
+              },
+            success: res => {
+              // console.log('云函数cart调用成功')
+              // console.log(this.openid)
+              wx.hideLoading()
               _this.getAddressList();
-            });
+            },
+            fail: err => {
+              wx.hideLoading()
+              console.error('[云函数] [login] 调用失败', err)
+            }
+          })
+            // const data = get("/address/deleteAction", {
+            //   id: id
+            // }).then(() => {
+            //   _this.getAddressList();
+            // });
           } else if (res.cancel) {
             console.log("用户点击取消");
             //滑动之前先初始化样式数据
@@ -199,34 +218,72 @@ export default {
     },
     toDetail(id) {
       wx.navigateTo({
-        url: "/pages/addaddress/main?id=" + id
+        url: "/pages/myaddaddress/main?id=" + id
       });
     },
-    async getAddressList() {
-      var _this = this;
-      const data = await get("/address/getListAction", {
-        openId: _this.openId
-      });
-      for (var i = 0; i < data.data.length; i++) {
-        data.data[i].textStyle = "";
-        data.data[i].textStyle1 = "";
-        console.log("###this is data.data[i]###")
-        console.log(data.data[i])
-      }
-      this.listData = data.data;
-      console.log(this.listData);
+    getAddressList() {
+      showLoading('加载中...');
+      wx.cloud.callFunction({
+        name: 'login',
+        success: res => {
+          // console.log('云函数login调用成功')
+          // console.log(res.result.openid)
+          this.openid = res.result.openid
+          wx.cloud.callFunction({
+            name: 'address',
+            data: {
+                type: "default",
+                openid: this.openid
+              },
+            success: res => {
+              // console.log('云函数cart调用成功')
+              // console.log(this.openid)
+              wx.hideLoading()
+              if (res.result.data.length){
+                this.listData = res.result.data
+                for (var i = 0; i < this.listData.length; i++) {
+                  this.listData[i].textStyle = "";
+                  this.listData[i].textStyle1 = "";
+                  console.log("###this is data.data[i]###")
+                  console.log(this.listData[i])
+                }
+              }              
+            },
+            fail: err => {
+              wx.hideLoading()
+              console.error('[云函数] [login] 调用失败', err)
+            }
+          })
+        },
+        fail: err => {
+          wx.hideLoading()
+          console.error('[云函数] [login] 调用失败', err)
+        }
+      })
+      // var _this = this;
+      // const data = await get("/address/getListAction", {
+      //   openId: _this.openId
+      // });
+      // for (var i = 0; i < data.data.length; i++) {
+      //   data.data[i].textStyle = "";
+      //   data.data[i].textStyle1 = "";
+      //   console.log("###this is data.data[i]###")
+      //   console.log(data.data[i])
+      // }
+      // this.listData = data.data;
+      // console.log(this.listData);
     },
     wxaddress(index) {
       if (index == 1) {
         wx.navigateTo({
-          url: "/pages/addaddress/main"
+          url: "/pages/myaddaddress/main"
         });
       } else {
         wx.chooseAddress({
           success: function(res) {
             var res = encodeURIComponent(JSON.stringify(res));
             wx.navigateTo({
-              url: "/pages/addaddress/main?res=" + res
+              url: "/pages/myaddaddress/main?res=" + res
             });
           }
         });

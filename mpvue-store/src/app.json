@@ -1,29 +1,30 @@
 {
-  "pages": [      
-    "pages/index/main",  
-    "pages/my/main",
-    "pages/myaddress/main",
+  "pages": [
+    "pages/my/main",    
+    "pages/myorderlist/main",       
+    "pages/mycart/main",  
+    "pages/mypayment/main",     
+    "pages/index/main",          
     "pages/collectlist/main",
     "pages/goodslist/main",    
     "pages/goodsdetails/main",  
+    "pages/myaddress/main",
+    "pages/myaddaddress/main",
+    "pages/myaddressSelect/main",
+    "pages/myorder/main",
     "pages/logs/main",
     "pages/category/main",
     "pages/categorylist/main",
     "pages/topic/main",
     "pages/cart/main",
-    "pages/mycart/main",
     "pages/search/main",    
     "pages/mappage/main",
     "pages/brandlist/main",
-    "pages/newgoods/main",
     "pages/topicdetail/main",
     "pages/goods/main",
     "pages/order/main",
     "pages/addaddress/main",
-    "pages/addressSelect/main",
-    "pages/myaddaddress/main",
-    "pages/myaddressSelect/main",
-    "pages/myorder/main"
+    "pages/addressSelect/main"
   ],
   "permission": {
     "scope.userLocation": {

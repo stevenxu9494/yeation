@@ -77,6 +77,12 @@ export default {
       allprice: '',
       openid: '',
       listData: [],
+      goodsId:"",
+      goodsQuantity:"",
+      goodsPrice:"",
+      goodsSummary:"",
+      goodsName:"",
+      goodsImage:""
     }
   },
   // 原生小程序，等于mounted()
@@ -103,11 +109,31 @@ export default {
           // console.log(res.result.openid)
           this.openid = res.result.openid
           wx.cloud.callFunction({
-            name: 'order',
+            name: 'address',
             data: {
-                type: "get",
+                type: "default",
                 openid: this.openid
               },
+            success: res => {
+              hideLoading()
+              if (res.result.data.length){
+                this.address = res.result.data[0]
+                console.log(this.address)
+              } else{
+                this.address = {}
+              }   
+            },
+            fail: err => {
+              hideLoading()
+              console.error('[云函数] [login] 调用失败', err)
+            }
+          })    
+          wx.cloud.callFunction({
+            name: 'order',
+            data: {
+              type: "get",
+              openid: this.openid
+            },
             success: res => {
               console.log('云函数order:get调用成功')
               // console.log(this.openid)
@@ -116,7 +142,6 @@ export default {
               this.summary=[],
               this.name=[],
               this.image=[],
-              wx.hideLoading()
               this.listData = res.result.data[0]
               this.allprice = this.listData.allprice
               this.quantity = this.listData.goodsQuantity.split(',')
@@ -124,101 +149,115 @@ export default {
               this.summary = this.listData.goodsSummary.split(',')
               this.name = this.listData.goodsName.split(',')
               this.image = this.listData.goodsImage.split(',')                       
+              this.goodsId = this.listData.goodsId
+              this.goodsQuantity = this.listData.goodsQuantity
+              this.goodsPrice = this.listData.goodsPrice
+              this.goodsSummary = this.listData.goodsSummary
+              this.goodsName = this.listData.goodsName
+              this.goodsImage = this.listData.goodsImage
             },
             fail: err => {
-              wx.hideLoading()
+              hideLoading()
               console.error('[云函数] [login] 调用失败', err)
             }
           })
-          wx.cloud.callFunction({
-            name: 'address',
-            data: {
-                type: "default",
-                openid: this.openid
-              },
-            success: res => {
-              wx.hideLoading()
-              if (res.result.data.length){
-                this.address = res.result.data[0]
-                console.log(this.address)
-              }              
-            },
-            fail: err => {
-              wx.hideLoading()
-              console.error('[云函数] [login] 调用失败', err)
-            }
-          })          
+                
         },
         fail: err => {
-          wx.hideLoading()
+          hideLoading()
           console.error('[云函数] [login] 调用失败', err)
         }
       })
-      // const data = await get('/order/detailAction', {
-      //   openId: this.openId,
-      //   addressId: this.addressId
-      // })
-      // console.log(data)
-      // if (data) {
-      //   // this.allprice = data.price
-      //   this.listData = data.goodsList
-      //   this.address = data.address
-      // }
-      // // map计算购物车总价
-      // this.listData.map((item) => {
-      //   this.allprice = Number(item.retail_price * item.number) + Number(this.allprice)
-      // })
     },
-  //   delGoods(id, index) {
-  //     wx.showModal({
-  //     title: '提示',
-  //     content: '确定要删除吗？',
-  //     success: (sm) =>{
-  //       if (sm.confirm) {
-  //         showLoading('加载中...');
-  //           // 用户点击了确定 可以调用删除方法了
-  //         wx.cloud.callFunction({
-  //           name: 'cart',
-  //           data: {
-  //             type: "delete",
-  //             openid: this.openid,
-  //             id:id
-  //           },
-  //           success:res =>{
-  //             // console.log('云函数cart:remove调用成功')              
-  //             for (let i = 0; i < this.listData.length; i++) {
-  //               const element = this.listData[i]
-  //               if (element.id == id) {
-  //                 this.listData.splice(i,1)
-  //               }
-  //             }
-  //             wx.hideLoading()  
-  //             wx.showToast({
-  //               title: '删除成功',
-  //               icon: 'success',
-  //               duration: 1500
-  //             })
-  //           },
-  //           fail: err => {
-  //             wx.hideLoading()
-  //             console.error('[云函数] [login] 调用失败', err)
-  //           }
-  //         })
-  //       } else if (sm.cancel) {
-  //         wx.hideLoading()
-  //         console.log('用户点击取消')
-  //       }
-  //     }
-  //   })
-  // },
-    pay () {
-      wx.showToast({
-        title: '支付功能暂未开发',
-        icon: 'none',
-        duration: 1500,
-        mask: false,
-        success: res => {}
-      })
+    getDateTime() {
+      var now     = new Date(); 
+      var year    = now.getFullYear();
+      var month   = now.getMonth()+1; 
+      var day     = now.getDate();
+      var hour    = now.getHours();
+      var minute  = now.getMinutes();
+      var second  = now.getSeconds(); 
+      if(month.toString().length == 1) {
+            month = '0'+month;
+      }
+      if(day.toString().length == 1) {
+            day = '0'+day;
+      }   
+      if(hour.toString().length == 1) {
+            hour = '0'+hour;
+      }
+      if(minute.toString().length == 1) {
+            minute = '0'+minute;
+      }
+      if(second.toString().length == 1) {
+            second = '0'+second;
+      }   
+      var dateTime = year+'/'+month+'/'+day+' '+hour+':'+minute+':'+second;   
+        return dateTime;
+    },
+    isEmpty(obj) {
+      for(var prop in obj) {
+        if(obj.hasOwnProperty(prop)) {
+          return false;
+        }
+      }
+      return true;
+    },
+    pay () {     
+      console.log(this.address) 
+      if (!this.isEmpty(this.address)){
+        showLoading('加载中...');
+        var currentdate = new Date(); 
+        var orderid = currentdate.valueOf();
+        var datetime =  this.getDateTime();
+        wx.cloud.callFunction({
+          name: 'ordersummary',
+          data: {
+              type: "insert",
+              openid: this.openid,
+              orderid: orderid.toString(),
+              ordertime: datetime,
+              paid: false,
+              shipped: false,
+              name: this.address.name,
+              mobile: this.address.mobile,
+              address: this.address.address,
+              address_detail: this.address.address_detail,
+              goodsId: this.listData.goodsId,
+              goodsQuantity: this.listData.goodsQuantity,
+              goodsPrice: this.listData.goodsPrice,
+              goodsSummary: this.listData.goodsSummary,
+              goodsName: this.listData.goodsName,
+              goodsImage: this.listData.goodsImage,
+              allprice: this.allprice
+          },
+          success: res => {
+            hideLoading();
+            wx.navigateTo({
+              url: '/pages/mypayment/main?orderid=' + orderid
+            })
+          },
+          fail: err => {
+              hideLoading()
+              console.error('[云函数] [login] 调用失败', err)
+          }
+        })
+      } else {
+        wx.showToast({
+          title: '请选择收件地址',
+          icon: 'none',
+          duration: 1500,
+          mask: false,
+          success: res => {}
+        })
+      }
+      // wx.showToast({
+      //   title: '支付功能暂未开发',
+      //   icon: 'none',
+      //   duration: 1500,
+      //   mask: false,
+      //   success: res => {}
+      // })
     }
   },
   computed: {

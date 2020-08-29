@@ -16,6 +16,20 @@ export default {
     var openId = userInfo.openId;
     wx.setStorageSync("userInfo", userInfo);
     wx.setStorageSync("openId", openId);
+
+    wx.cloud.callFunction({
+      name: 'login',
+      success: res => {
+        // console.log('云函数login调用成功')
+        // console.log(res.result.openid)
+        var openid = res.result.openid
+        wx.setStorageSync("openid", openid);
+      },
+      fail: err => {
+        wx.hideLoading()
+        console.error('[云函数] [login] 调用失败', err)
+      }
+    })
     /*
      * 平台 api 差异的处理方式:  api 方法统一挂载到 mpvue 名称空间, 平台判断通过 mpvuePlatform 特征字符串
      * 微信：mpvue === wx, mpvuePlatform === 'wx'
@@ -85,5 +99,8 @@ view,text{
 }
 .wxParse .img{
   display: block !important;
+}
+.safeArea {
+  padding-bottom: 34px!important;
 }
 </style>

@@ -24,7 +24,7 @@ export default {
         {
           title: "我的订单",
           icon: "icon-unie64a",
-          url: ""
+          url: "/pages/myorderlist/main"
         },
         {
           title: "优惠券",

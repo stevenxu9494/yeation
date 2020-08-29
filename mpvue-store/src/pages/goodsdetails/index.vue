@@ -105,7 +105,7 @@ export default {
     console.log(this.info.name)
     return {
       title: this.info.name,
-      path: '/pages/goodsdetails/main?id' + this.info.id,
+      path: '/pages/goodsdetails/main?id=' + this.info.id,
       imageUrl: this.info.imageUrl
     }
   },

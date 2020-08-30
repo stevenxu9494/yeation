@@ -88,7 +88,7 @@ export default {
 
     toSearch () {
       wx.navigateTo({
-        url: '/pages/search/main'
+        url: '/pages/mysearch/main'
       })
     },
     categoryList (id) {

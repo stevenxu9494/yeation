@@ -31,18 +31,18 @@
           {{item.keyword}}
         </div>
       </div>
-    </div>
-    <div class="history hotsearch">
+    </div>    
+    <!-- 热门搜索 -->
+    <!-- <div class="history hotsearch">
       <div class="t">
         <div>热门搜索</div>
       </div>
       <div class="cont">
-        <!-- 动态添加class=> :class -->
         <div v-for="(item, index) in hotData" :key="index" :class="{active: item.is_hot === 1}" @click="searchWords" :data-value="item.keyword">
           {{item.keyword}}
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- 商品列表 -->
     <div class="goodsList" v-if="listData.length!==0">
       <div class="sortnav">
@@ -52,9 +52,10 @@
       </div>
       <div class="sortlist">
         <div @click="goodsDetail(item.id)" class="item" v-for="(item, index) in listData" :key="index">
-          <img :src="item.list_pic_url" alt="">
+          <img :src="item.thumbUrl" alt="">
           <p class="name">{{item.name}}</p>
-          <p class="price">¥{{item.retail_price}}</p>
+          <p v-if="item.price !== 0" class="price">¥{{item.sellPrice}}</p>
+          <p v-else class="price">价格波动，请联系客服</p>
         </div>
       </div>
     </div>
@@ -63,7 +64,7 @@
 </template>
 
 <script>
-import { get, post } from '../../utils'
+import { showLoading, hideLoading } from '../../utils/loading'
 export default {
   data () {
     return {
@@ -77,10 +78,10 @@ export default {
       nowIndex: 0
     }
   },
-  mounted () {
+  onShow () {
     // 获取用户id
-    this.openid = wx.getStorageSync('openId') || '';
-    this.getHotData()
+    this.openid = wx.getStorageSync('openid') || '';
+    this.getHistoryData()
   },
   methods: {
     clearInput() {
@@ -92,13 +93,27 @@ export default {
         delta: 1
       })
     },
-    async clearHistory() {
-      const data = await post('/search/clearhistoryAction', {
-        openId: this.openid
-      })
-      if (data) {
-        this.historyData = []
-      }
+    clearHistory() {
+      showLoading('加载中...');
+      wx.cloud.callFunction({
+        name: 'search',
+        data: {
+            type: "delete",
+            openid: this.openid
+          },
+        success: res => {
+          hideLoading();
+          this.historyData = []
+          wx.showToast({
+            title: '删除成功',
+            icon: 'success',
+            duration: 1500
+          })
+        },
+        fail: err => {
+          console.error('[云函数] [login] 调用失败', err)
+        }
+      }) 
     },
     inputFocus() {
       // 商品清空
@@ -106,44 +121,103 @@ export default {
       // 展示搜索提示信息
       this.tipsearch()
     },
-    async tipsearch() {
+    tipsearch() {
       // 因为v-model双向绑定，实时获得keyword
-      const data = await get('/search/helperaction', {
-        keyword: this.words
-      })
-      this.tipsData = data.keywords
+      wx.cloud.callFunction({
+        name: 'search',
+        data: {
+            type: "gettips",
+            keyword: this.words,
+            order: this.order
+          },
+        success: res => {
+          this.tipsData = res.result.data
+          console.log(this.tipsData)
+        },
+        fail: err => {
+          console.error('[云函数] [login] 调用失败', err)
+        }
+      }) 
     },
     // 异步请求，回车之后绑定搜索值words
-    async searchWords(e) {
+    searchWords(e) {
       // 取出赋值给event的物品名称
       let value = e.currentTarget.dataset.value
       // 搜索或者点击的名称赋值给words
       this.words = value || this.words
-      const data = await post('/search/addhistoryaction', {
-        openId: this.openid,
-        keyword: value || this.words
-      })
+      console.log(this.words)
+      wx.cloud.callFunction({
+        name: 'search',
+        data: {
+            type: "check",
+            openid:this.openid,
+            keyword: value || this.words
+          },
+        success: res => {
+          if (res.result.data.length === 0){
+            wx.cloud.callFunction({
+              name: 'search',
+              data: {
+                  type: "insert",
+                  openid:this.openid,
+                  keyword: value || this.words
+                },
+              success: res => {
+                console.log("搜索内容插入成功")
+              },
+              fail: err => {
+                console.error('[云函数] [login] 调用失败', err)
+              }
+            }) 
+          } else {
+            console.log("已经存在数据")
+          }
+        },
+        fail: err => {
+          console.error('[云函数] [login] 调用失败', err)
+        }
+      })       
       // console.log(data)
       // 获取历史数据
-      this.getHotData()
+      this.getHistoryData()
       this.getlistData()
     },
-    async getHotData (first) {
-      const data = await get('/search/indexaction?openId=' + this.openid)
-      this.historyData = data.historyData
-      this.hotData = data.hotKeywordList
-      // console.log(data)
+    getHistoryData () {
+      wx.cloud.callFunction({
+        name: 'search',
+        data: {
+            type: "get",
+            openid:this.openid
+          },
+        success: res => {
+          hideLoading()
+          this.historyData = res.result.data
+        },
+        fail: err => {
+          hideLoading()
+          console.error('[云函数] [login] 调用失败', err)
+        }
+      }) 
     },
-    async getlistData () {
-      // 获取商品列表
-      const data  = await get('/search/helperaction', {
-        // order => 排序
-        keyword: this.words,
-        order: this.order
-      })
-      this.listData = data.keywords
-      this.tipsData = []
-      console.log(data)
+    getlistData () {
+      showLoading('加载中...');
+      wx.cloud.callFunction({
+        name: 'search',
+        data: {
+            type: "gettips",
+            keyword: this.words,
+            order: this.order
+          },
+        success: res => {
+          hideLoading()
+          this.listData = res.result.data
+          this.tipsData = []
+        },
+        fail: err => {
+          hideLoading()
+          console.error('[云函数] [login] 调用失败', err)
+        }
+      }) 
     },
     changeTab(index) {
       // 点击分类每次都产生一次接口请求
@@ -153,12 +227,13 @@ export default {
       } else {
         this.order = ''
       }
+      console.log(this.order)
       this.getlistData()
     },
     goodsDetail (id) {
       wx.navigateTo({
         // 带形参去新的页面
-        url: '/pages/goods/main?id=' + id
+        url: '/pages/goodsdetails/main?id=' + id
       });
     }
   }

@@ -1,10 +1,10 @@
 <template>
   <div class="category">
     <!-- <div class="search" @click="tosearch"> -->
-    <div class="search">
+    <div class="search" @click="tosearch">
       <div class="ser">
         <span class="icon"></span>
-        <span>商品搜索，共239款好物</span>
+        <span>商品搜索，共368款好物</span>
       </div>
     </div>
     <div class="content">
@@ -26,9 +26,7 @@
         <div class="bottom">
           <!-- <div class="item" @click="categoryList(item.id)" v-for="(item, index) in detailData.subList" :key="index"> -->
           <div class="item" v-for="item in ListData" :key="item" @click="goodsdetails(item.id)">
-            <!-- <img :src="item.wap_banner_url" alt=""> -->
             <img :src="item.thumbUrl">
-            <!-- <span>{{item.thumbUrl}}</span> -->
             <span>{{item.name}}</span>
           </div>
           <div>{{openid}}</div>
@@ -107,6 +105,11 @@ export default {
           content: '当前微信版本过低，暂无法使用该功能，请升级后重试。'
         })
       }
+    },
+    tosearch () {
+      wx.navigateTo({
+        url: '../mysearch/main'
+      })
     },
     selectItem (item, index) {
       // 获取右边商品的数据

@@ -79,12 +79,12 @@ export default {
             success: res => {
               // console.log('云函数cart调用成功')
               // console.log(this.openid)
-              wx.hideLoading()
+              hideLoading()
               this.listData = res.result.data
               console.log(this.listData)
             },
             fail: err => {
-              wx.hideLoading()
+              hideLoading()
               console.error('[云函数] [login] 调用失败', err)
             }
           })

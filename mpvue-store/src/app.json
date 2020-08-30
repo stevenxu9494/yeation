@@ -1,17 +1,18 @@
 {
-  "pages": [
+  "pages": [    
+    "pages/goodslist/main", 
+    "pages/mysearch/main",   
     "pages/my/main",    
     "pages/myorderlist/main",       
     "pages/mycart/main",  
     "pages/mypayment/main",     
     "pages/index/main",          
-    "pages/collectlist/main",
-    "pages/goodslist/main",    
+    "pages/collectlist/main",    
     "pages/goodsdetails/main",  
     "pages/myaddress/main",
     "pages/myaddaddress/main",
     "pages/myaddressSelect/main",
-    "pages/myorder/main",
+    "pages/myorder/main",    
     "pages/logs/main",
     "pages/category/main",
     "pages/categorylist/main",

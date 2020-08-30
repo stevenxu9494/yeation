@@ -19,7 +19,8 @@
       <div class="c">
         <p>{{info.name}}</p>
         <p>品牌名称：{{info.brand}}</p>
-        <p>¥{{info.sellPrice}}</p>
+        <p v-if="info.price !== 0" class="price">¥{{info.sellPrice}}</p>
+        <p v-else class="price">价格波动，请联系客服</p>
         <!-- <div class="brand" v-if="brand.name">
           <p>{{brand.name}}</p>
         </div> -->
@@ -45,8 +46,10 @@
           <img src="/static/images/ic_menu_shoping_nor.png" alt="">
         </div>
       </div>
-      <div @click="buy()">立即购买</div>
-      <div @click="addCart()">加入购物车</div>
+      <div v-if="info.price !== 0" @click="buy()">立即购买</div>
+      <div v-else @click="notForSale()">立即购买</div>      
+      <div v-if="info.price !== 0" @click="addCart()">加入购物车</div>
+      <div v-else @click="notForSale()">加入购物车</div>
     </div>
 
     <!-- 选择规格的弹出层 -->
@@ -59,7 +62,8 @@
         <div class="right">
           <div>
             <p>{{info.name}}</p>
-            <p>价格¥{{info.sellPrice}}</p>
+            <p v-if="info.price !== 0" class="price">¥{{info.sellPrice}}</p>
+            <p v-else class="price">价格波动，请联系客服</p>
             <p>请选择数量</p> 
           </div>
         </div>
@@ -91,13 +95,6 @@ export default {
       sellPrice: 0,
       hasGoods: [],
       allnumber: 0
-      // brand: {},    
-      // attribute: [],
-      // goods_desc: '',
-      // issueList: [], // 常见问题
-      // productList: [],
-      // goodsId: '',
-      // allPrice: '' // 总价=数量*单价
     }
   },
   // 商品分享, 小程序自带格式, title/path/imageUrl
@@ -199,25 +196,6 @@ export default {
         }
       })
     },
-//     async goodsDetail () {
-//       const data = await get('/goods/detailaction', {
-//         id: this.id,
-//         openId: this.openId
-//       })
-//       console.log(data)
-//       this.info = data.info
-//       this.gallery = data.gallery
-//       this.attribute = data.attribute
-//       this.goods_desc = data.info.goods_desc
-//       this.issueList = data.issue
-//       this.productList = data.productList
-//       this.goodsId = data.info.id
-//       // 进页面就判断是否收藏过
-//       this.collectFlag = data.collected
-//       // 购物车内有多少件物品(非种类)
-//       this.allnumber = data.allnumber
-//       this.allPrice = data.info.retail_price
-//     },
     showType () {
       this.showpop = !this.showpop
     },
@@ -294,6 +272,17 @@ export default {
         url: '/pages/mycart/main'
       });  
     },
+    notForSale () {
+      wx.showToast({
+        title: '价格波动，请联系客服',
+        // 2秒后消失
+        duration: 3000,
+        icon: 'none',
+        // 除蒙层外其他地方不能点
+        mask: true,
+        success: res => {}
+      })
+    },
     buy() {
       if (this.showpop) {
       // 如果没有选择数量，使用微信官方弹窗提示选择商品
@@ -344,7 +333,7 @@ export default {
                     goodsSummary: goodsSummary,
                     goodsName: goodsName,
                     goodsImage: goodsImage,
-                    allprice: this.allPrice
+                    allprice: goodsSummary
                   },
                 success: res => {
                   // console.log('云函数cart调用成功')
@@ -374,7 +363,7 @@ export default {
                     goodsSummary: goodsSummary,
                     goodsName: goodsName,
                     goodsImage: goodsImage,
-                    allprice: this.allPrice
+                    allprice: goodsSummary
                   },
                 success: res => {
                   // console.log('云函数cart调用成功')
